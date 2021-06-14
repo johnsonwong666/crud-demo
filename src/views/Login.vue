@@ -1,8 +1,6 @@
 <template>
-  <div id="app">
-    <keep-alive>
-      <router-view></router-view>
-    </keep-alive>
+  <div id="login-register">
+      <login></login>
   </div>
 </template>
 
@@ -11,11 +9,14 @@ import { Component, Vue } from "vue-property-decorator";
 import Login from '@/components/Login.vue'
 @Component({
   components: {
-    Login
+      Login
   },
 })
-export default class App extends Vue {}
+export default class Detail extends Vue {
+
+}
 </script>
 
 <style>
+  
 </style>

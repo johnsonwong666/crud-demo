@@ -19,7 +19,7 @@ interface IDetail {
   hometown: String;
 }
 import { Component, Vue } from "vue-property-decorator";
-import axios from "axios";
+import instance from '@/api/index'
 @Component({
   components: {},
 })
@@ -32,7 +32,7 @@ export default class Detail extends Vue {
     hometown: "",
   };
   activated() {
-    axios.get(`/api/person/${this.$route.params.name}`).then((res) => {
+    instance.get(`/api/person/${this.$route.params.name}`).then((res) => {
       this.personDetail = res.data;
       console.log(this.personDetail)
     });

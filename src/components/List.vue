@@ -3,43 +3,20 @@
     <el-header>express+mongodb CRUD演示</el-header>
     <el-main>
       <el-table :data="tableData" border style="width: 100%">
-        <el-table-column
-          prop="name"
-          label="姓名"
-          width="200"
-          align="center"
-        ></el-table-column>
-        <el-table-column
-          prop="age"
-          label="年龄"
-          width="200"
-          align="center"
-        ></el-table-column>
-        <el-table-column
-          prop="sex"
-          label="性别"
-          width="200"
-          align="center"
-        ></el-table-column>
+        <el-table-column prop="name" label="姓名" width="200" align="center"></el-table-column>
+        <el-table-column prop="age" label="年龄" width="200" align="center"></el-table-column>
+        <el-table-column prop="sex" label="性别" width="200" align="center"></el-table-column>
         <el-table-column label="操作" width="783" align="center">
           <template slot-scope="scope">
-            <el-button @click="handleCheck(scope.row)" type="text" size="small"
-              >查看</el-button
-            >
-            <el-button type="text" size="small" @click="handleEdit(scope.row)"
-              >编辑</el-button
-            >
-            <el-button @click="handleDelete(scope.row)" type="text" size="small"
-              >删除</el-button
-            >
+            <el-button @click="handleCheck(scope.row)" type="text" size="small">查看</el-button>
+            <el-button type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button @click="handleDelete(scope.row)" type="text" size="small">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-main>
     <el-footer>
-      <el-button type="primary" @click="handleAdd" v-if="!isShowForm"
-        >新增</el-button
-      >
+      <el-button type="primary" @click="handleAdd" v-if="!isShowForm">新增</el-button>
       <span v-else>
         <el-button type="primary" @click="handleSubmit">提交</el-button>
         <el-button type="primary" @click="handleClose">关闭</el-button>
@@ -47,12 +24,7 @@
     </el-footer>
     <div style="margin-top: 30px"></div>
 
-    <el-form
-      label-position="left"
-      label-width="70px"
-      :model="formLabelAlign"
-      v-if="isShowForm"
-    >
+    <el-form label-position="left" label-width="70px" :model="formLabelAlign" v-if="isShowForm">
       <el-form-item label="姓名">
         <el-input v-model="formLabelAlign.name"></el-input>
       </el-form-item>
@@ -79,15 +51,15 @@ interface Data {
   sex: String;
   hobby: String;
   hometown: String;
-  id:String
+  id: String;
 }
 
 import { Component, Vue } from "vue-property-decorator";
-import axios from "axios";
+import instance from "@/api/index";
 @Component({})
 export default class List extends Vue {
   tableData: Data[] = [];
-  created() {
+  activated() {
     this.getPerson();
   }
   // labelPosition: String = "right";
@@ -99,22 +71,31 @@ export default class List extends Vue {
     sex: "",
     hobby: "",
     hometown: "",
-    id: ""
+    id: "",
   };
 
   getPerson(): void {
-    axios.get("/api/getPerson").then((res: any) => {
-      this.tableData = res.data.map((item: any) => {
-        return {
-          name: item.name,
-          age: item.age,
-          sex: item.sex,
-          hobby: item.hobby,
-          hometown: item.hometown,
-          id: item._id,
-        };
+    instance
+      .get("/api/getPerson")
+      .then((res: any) => {
+        this.tableData = res.data.map((item: any) => {
+          return {
+            name: item.name,
+            age: item.age,
+            sex: item.sex,
+            hobby: item.hobby,
+            hometown: item.hometown,
+            id: item._id,
+          };
+        });
+      })
+      .catch((err) => {
+        this.$router.replace("/login");
+        this.$message({
+          type: "error",
+          message: "请先登录",
+        });
       });
-    });
   }
 
   handleCheck(row: any) {
@@ -122,7 +103,7 @@ export default class List extends Vue {
   }
 
   handleDelete(row: any) {
-    axios
+    instance
       .post("/api/deletePerson", {
         id: row.id,
       })
@@ -144,7 +125,7 @@ export default class List extends Vue {
       sex: "",
       hobby: "",
       hometown: "",
-      id: ""
+      id: "",
     };
   }
 
@@ -156,7 +137,7 @@ export default class List extends Vue {
       sex: row.sex,
       hobby: row.hobby,
       hometown: row.hometown,
-      id: row.id
+      id: row.id,
     };
     this.isShowForm = true;
   }
@@ -168,7 +149,7 @@ export default class List extends Vue {
   handleSubmit(): void {
     switch (this.submitType) {
       case 0:
-        axios.post("/api/addPerson", this.formLabelAlign).then((res) => {
+        instance.post("/api/addPerson", this.formLabelAlign).then((res) => {
           this.$message({
             type: "success",
             message: "添加成功",
@@ -178,7 +159,7 @@ export default class List extends Vue {
         this.getPerson();
         break;
       case 1:
-        axios.post("/api/updatePerson", this.formLabelAlign).then((res) => {
+        instance.post("/api/updatePerson", this.formLabelAlign).then((res) => {
           this.$message({
             type: "success",
             message: "修改成功",
