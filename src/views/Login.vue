@@ -1,6 +1,7 @@
 <template>
   <div id="login-register">
       <login></login>
+      11
   </div>
 </template>
 
